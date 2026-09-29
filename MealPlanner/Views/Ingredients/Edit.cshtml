@@ -1,0 +1,78 @@
+﻿@model MealPlanner.ViewModels.Ingredients.IngredientEditViewModel
+
+@{
+    ViewData["Title"] = "Alapanyag szerkesztése";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit"
+              asp-route-id="@Model.Id"
+              method="post">
+
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+
+                <input asp-for="Name"
+                       class="form-control"
+                       maxlength="150" />
+
+                <span asp-validation-for="Name"
+                      class="text-danger"></span>
+
+                <div class="form-text">
+                    A név módosítása a kapcsolódó receptekben és
+                    készletekben is megjelenik. Átnevezéssel ne
+                    alakítsd át másik alapanyaggá.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-label">
+                    @Html.DisplayNameFor(model => model.MeasurementType)
+                </div>
+
+                <div class="form-control-plaintext">
+                    @Html.DisplayFor(model => model.MeasurementType)
+                </div>
+
+                <div class="form-text">
+                    A mértéktípus nem módosítható, mert meglévő
+                    recept- és készletadatok kapcsolódhatnak hozzá.
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsActive"
+                       class="form-check-input" />
+
+                <label asp-for="IsActive"
+                       class="form-check-label"></label>
+            </div>
+
+            <p class="text-muted">
+                Az inaktiválás megőrzi az alapanyagot és a hozzá
+                kapcsolódó korábbi adatokat.
+            </p>
+
+            <button type="submit" class="btn btn-primary">
+                Mentés
+            </button>
+
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

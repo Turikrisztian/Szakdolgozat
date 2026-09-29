@@ -1,0 +1,83 @@
+﻿@model IReadOnlyList<MealPlanner.Models.Ingredient>
+
+@{
+    ViewData["Title"] = "Alapanyagok kezelése";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">
+        @successMessage
+    </div>
+}
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">
+        Új alapanyag
+    </a>
+
+    <a asp-controller="Admin"
+       asp-action="Index"
+       class="btn btn-outline-secondary">
+        Vissza az adminisztrációhoz
+    </a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <p>Még nincs rögzített alapanyag.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Név</th>
+                    <th>Mértéktípus</th>
+                    <th>Állapot</th>
+                    <th>Műveletek</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var ingredient in Model)
+                {
+                    <tr>
+                        <td>@ingredient.Name</td>
+
+                        <td>
+                            @Html.DisplayFor(
+                                model => ingredient.MeasurementType)
+                        </td>
+
+                        <td>
+                            @if (ingredient.IsActive)
+                            {
+                                <span class="badge bg-success">
+                                    Aktív
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">
+                                    Inaktív
+                                </span>
+                            }
+                        </td>
+
+                        <td>
+                            <a asp-action="Edit"
+                               asp-route-id="@ingredient.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Szerkesztés
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,27 @@
+﻿@model MealPlanner.ViewModels.Categories.CategoryFormViewModel
+
+@{
+    ViewData["Title"] = "Új kategória";
+}
+
+<h1>Új kategória</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <partial name="_Form" model="Model" />
+
+            <button type="submit" class="btn btn-primary">
+                Létrehozás
+            </button>
+
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,28 @@
+﻿@model MealPlanner.ViewModels.Categories.CategoryFormViewModel
+
+<div asp-validation-summary="ModelOnly"
+     class="text-danger"
+     role="alert">
+</div>
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+
+    <input asp-for="Name"
+           class="form-control"
+           maxlength="100" />
+
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="form-check mb-3">
+    <input asp-for="IsActive" class="form-check-input" />
+
+    <label asp-for="IsActive" class="form-check-label"></label>
+</div>
+
+<p class="text-muted">
+    Az inaktív kategória megmarad a rendszerben.
+    Az új receptek kategóriaválasztójában majd csak az aktív
+    kategóriákat kínáljuk fel.
+</p>

@@ -1,0 +1,69 @@
+﻿@using MealPlanner.Models.Enums
+@model MealPlanner.ViewModels.Ingredients.IngredientCreateViewModel
+
+@{
+    ViewData["Title"] = "Új alapanyag";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+
+                <input asp-for="Name"
+                       class="form-control"
+                       maxlength="150" />
+
+                <span asp-validation-for="Name"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MeasurementType"
+                       class="form-label"></label>
+
+                <select asp-for="MeasurementType"
+                        asp-items="Html.GetEnumSelectList<MeasurementType>()"
+                        class="form-select">
+                    <option value="">Válassz mértéktípust</option>
+                </select>
+
+                <span asp-validation-for="MeasurementType"
+                      class="text-danger"></span>
+
+                <div class="form-text">
+                    Tömeg: például gramm vagy kilogramm.
+                    Térfogat: például milliliter vagy liter.
+                    Darabszám: például tojás darabban.
+                    A mértéktípus mentés után nem szerkeszthető.
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsActive"
+                       class="form-check-input" />
+
+                <label asp-for="IsActive"
+                       class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Létrehozás
+            </button>
+
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
