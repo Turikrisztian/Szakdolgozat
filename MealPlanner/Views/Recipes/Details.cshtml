@@ -1,0 +1,110 @@
+﻿@using System.Security.Claims
+@using MealPlanner.Security
+@model MealPlanner.Models.Recipe
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+<partial name="_ArchiveControls" model="Model" />
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="alert">
+        @successMessage
+    </div>
+}
+
+@if (Model.IsArchived)
+{
+    <div class="alert alert-secondary" role="alert">
+        Ez a recept archivált, ezért a nyilvános listában nem jelenik meg.
+    </div>
+}
+else if (!Model.IsPublic)
+{
+    <div class="alert alert-info" role="alert">
+        Ez a recept privát. Csak a tulajdonosa és az adminisztrátor láthatja.
+    </div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">Kategória</dt>
+    <dd class="col-sm-9">@Model.Category.Name</dd>
+
+    <dt class="col-sm-3">Adagszám</dt>
+    <dd class="col-sm-9">@Model.Servings adag</dd>
+
+    <dt class="col-sm-3">Elkészítési idő</dt>
+    <dd class="col-sm-9">@Model.PreparationTimeMinutes perc</dd>
+</dl>
+
+<h2 class="h4 mt-4">Hozzávalók</h2>
+
+<p class="text-muted">
+    A megadott mennyiségek @Model.Servings adag elkészítéséhez szükségesek.
+</p>
+
+@if (Model.RecipeIngredients.Count == 0)
+{
+    <p>Ehhez a recepthez még nincs rögzített hozzávaló.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Alapanyag</th>
+                    <th scope="col" class="text-end">Mennyiség</th>
+                    <th scope="col">Mértékegység</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RecipeIngredients
+                    .OrderBy(item => item.Ingredient.Name))
+                {
+                    <tr>
+                        <td>@item.Ingredient.Name</td>
+                        <td class="text-end">
+                            @item.Quantity.ToString("0.###")
+                        </td>
+                        <td>@item.Unit.Symbol</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<h2 class="h4 mt-4">Elkészítés</h2>
+
+<div class="mb-4"
+     style="white-space: pre-wrap; overflow-wrap: anywhere;">
+    @Model.Instructions
+</div>
+
+<div class="mb-3">
+    <a asp-action="Index"
+       class="btn btn-outline-secondary">
+        Nyilvános receptek
+    </a>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Mine"
+           class="btn btn-outline-primary">
+            Saját receptek
+        </a>
+    }
+    @if (User.Identity?.IsAuthenticated == true &&
+     (User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.UserId ||
+      User.IsInRole(AppRoles.Admin)))
+    {
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Szerkesztés
+        </a>
+    }
+</div>

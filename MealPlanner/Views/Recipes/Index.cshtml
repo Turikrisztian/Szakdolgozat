@@ -1,0 +1,148 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model IReadOnlyList<MealPlanner.Models.Recipe>
+
+@{
+    var filterAction = ViewData["FilterAction"] as string ?? "Index";
+    var search = ViewData["Search"] as string;
+
+    var categoryOptions =
+        ViewData["CategoryOptions"] as IEnumerable<SelectListItem>
+        ?? new List<SelectListItem>();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="mb-3">
+    <a asp-action="Index"
+       class="btn btn-outline-primary">
+        Nyilvános receptek
+    </a>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Mine"
+           class="btn btn-outline-primary">
+            Saját receptek
+        </a>
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+            Új recept
+        </a>
+    }
+</div>
+
+<form asp-controller="Recipes"
+      asp-action="@filterAction"
+      method="get"
+      class="border rounded p-3 mb-4">
+
+    <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label for="search" class="form-label">
+                Recept neve
+            </label>
+
+            <input id="search"
+                   name="search"
+                   value="@search"
+                   type="search"
+                   class="form-control"
+                   placeholder="Például: palacsinta" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="categoryId" class="form-label">
+                Kategória
+            </label>
+
+            <select id="categoryId"
+                    name="categoryId"
+                    asp-items="categoryOptions"
+                    class="form-select">
+                <option value="">Összes kategória</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <div class="d-flex gap-2 flex-wrap">
+                <button type="submit"
+                        class="btn btn-primary">
+                    Keresés
+                </button>
+
+                <a asp-controller="Recipes"
+                   asp-action="@filterAction"
+                   class="btn btn-outline-secondary">
+                    Alaphelyzet
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info">
+        @ViewData["EmptyMessage"]
+    </div>
+}
+else
+{
+    <p class="text-muted">
+        Találatok száma: @Model.Count
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Recept</th>
+                    <th scope="col">Kategória</th>
+                    <th scope="col">Adagszám</th>
+                    <th scope="col">Elkészítési idő</th>
+                    <th scope="col">Állapot</th>
+                    <th scope="col">Műveletek</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var recipe in Model)
+                {
+                    <tr>
+                        <td>@recipe.Title</td>
+                        <td>@recipe.Category.Name</td>
+                        <td>@recipe.Servings adag</td>
+                        <td>@recipe.PreparationTimeMinutes perc</td>
+                        <td>
+                            @if (recipe.IsArchived)
+                            {
+                                <span class="badge bg-secondary">
+                                    Archivált
+                                </span>
+                            }
+                            else if (recipe.IsPublic)
+                            {
+                                <span class="badge bg-success">
+                                    Nyilvános
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary">
+                                    Privát
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@recipe.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Részletek
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

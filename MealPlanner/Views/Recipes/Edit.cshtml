@@ -1,0 +1,373 @@
+﻿@model MealPlanner.ViewModels.Recipes.RecipeEditViewModel
+
+@{
+    ViewData["Title"] = "Recept szerkesztése";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form asp-action="Edit"
+              asp-route-id="@Model.Id"
+              method="post">
+
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+
+                <input asp-for="Title"
+                       class="form-control"
+                       maxlength="200" />
+
+                <span asp-validation-for="Title"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label"></label>
+
+                <select asp-for="CategoryId"
+                        asp-items="Model.CategoryOptions"
+                        class="form-select">
+                    <option value="">-- Válassz kategóriát --</option>
+                </select>
+
+                <span asp-validation-for="CategoryId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Instructions"
+                       class="form-label"></label>
+
+                <textarea asp-for="Instructions"
+                          class="form-control"
+                          rows="8"
+                          maxlength="10000"></textarea>
+
+                <span asp-validation-for="Instructions"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Servings" class="form-label"></label>
+
+                    <input asp-for="Servings"
+                           class="form-control"
+                           min="1"
+                           step="1" />
+
+                    <span asp-validation-for="Servings"
+                          class="text-danger"></span>
+
+                    <div class="form-text">
+                        A hozzávalók mennyiségei ennyi adaghoz tartoznak.
+                        Az adagszám átírása nem módosítja automatikusan
+                        a hozzávalók mennyiségeit.
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="PreparationTimeMinutes"
+                           class="form-label"></label>
+
+                    <input asp-for="PreparationTimeMinutes"
+                           class="form-control"
+                           min="1"
+                           step="1" />
+
+                    <span asp-validation-for="PreparationTimeMinutes"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="IsPublic" class="form-check-input" />
+
+                <label asp-for="IsPublic" class="form-check-label"></label>
+
+                <div class="form-text">
+                    A nyilvános, nem archivált receptet
+                    mások bejelentkezés nélkül is megtekinthetik.
+                </div>
+            </div>
+
+            <h2 class="h4">Hozzávalók</h2>
+
+            <p class="text-muted">
+                Add meg a fenti adagszámhoz szükséges mennyiségeket.
+                Egy alapanyag csak egyszer szerepelhet.
+            </p>
+
+            @for (var i = 0; i < Model.Ingredients.Count; i++)
+            {
+                <div class="border rounded p-3 mb-3">
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label asp-for="Ingredients[i].IngredientId"
+                                   class="form-label">
+                                Alapanyag
+                            </label>
+
+                            <select asp-for="Ingredients[i].IngredientId"
+                                    asp-items="Model.IngredientOptions"
+                                    class="form-select">
+                                <option value="">
+                                    -- Válassz alapanyagot --
+                                </option>
+                            </select>
+
+                            <span asp-validation-for="Ingredients[i].IngredientId"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="Ingredients[i].Quantity"
+                                   class="form-label">
+                                Mennyiség
+                            </label>
+
+                            <input asp-for="Ingredients[i].Quantity"
+                                   type="text"
+                                   inputmode="decimal"
+                                   class="form-control"
+                                   placeholder="Pl. 250 vagy 0,5" />
+
+                            <span asp-validation-for="Ingredients[i].Quantity"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Ingredients[i].UnitId"
+                                   class="form-label">
+                                Mértékegység
+                            </label>
+
+                            <select asp-for="Ingredients[i].UnitId"
+                                    asp-items="Model.UnitOptions"
+                                    class="form-select">
+                                <option value="">
+                                    -- Válassz egységet --
+                                </option>
+                            </select>
+
+                            <span asp-validation-for="Ingredients[i].UnitId"
+                                  class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            name="operation"
+                            value="remove:@i"
+                            class="btn btn-outline-danger btn-sm"
+                            formnovalidate>
+                        Sor eltávolítása
+                    </button>
+                </div>
+            }
+
+            <div class="mb-4">
+                <button type="submit"
+                        name="operation"
+                        value="add"
+                        class="btn btn-outline-primary"
+                        formnovalidate>
+                    Új hozzávaló
+                </button>
+            </div>
+
+            <button type="submit"
+                    name="operation"
+                    value="save"
+                    class="btn btn-primary">
+                Mentés
+            </button>
+
+            <a asp-action="Details"
+               asp-route-id="@Model.Id"
+               class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (() => {
+            const addButton = document.querySelector(
+                'button[name="operation"][value="add"]'
+            );
+
+            if (!addButton) {
+                return;
+            }
+
+            const form = addButton.closest("form");
+
+            const removeSelector =
+                'button[name="operation"][value^="remove:"]';
+
+            // A hozzáadás többé nem küldi el az űrlapot.
+            addButton.type = "button";
+
+            const message = document.createElement("div");
+            message.className = "text-danger mb-2";
+            message.setAttribute("role", "status");
+
+            addButton.before(message);
+
+            function getRows() {
+                return Array.from(
+                    form.querySelectorAll(removeSelector)
+                ).map(button => button.closest(".border"));
+            }
+
+            function clearRow(row) {
+                row.querySelectorAll("input, select").forEach(field => {
+                    field.value = "";
+                    field.classList.remove("input-validation-error");
+                    field.removeAttribute("aria-invalid");
+                });
+
+                row.querySelectorAll("[data-valmsg-for]").forEach(span => {
+                    span.textContent = "";
+                    span.classList.remove("field-validation-error");
+                    span.classList.add("field-validation-valid");
+                });
+            }
+
+            function updateRows() {
+                getRows().forEach((row, index) => {
+                    // Folytonos sorszámok kellenek a szervernek:
+                    // Ingredients[0], Ingredients[1], stb.
+                    row.querySelectorAll(
+                        "input, select, label, [data-valmsg-for]"
+                    ).forEach(element => {
+                        const attributes = [
+                            "name",
+                            "id",
+                            "for",
+                            "data-valmsg-for",
+                            "aria-describedby"
+                        ];
+
+                        attributes.forEach(attribute => {
+                            const value = element.getAttribute(attribute);
+
+                            if (value === null) {
+                                return;
+                            }
+
+                            element.setAttribute(
+                                attribute,
+                                value
+                                    .replace(
+                                        /Ingredients\[\d+\]/g,
+                                        `Ingredients[${index}]`
+                                    )
+                                    .replace(
+                                        /Ingredients_\d+__/g,
+                                        `Ingredients_${index}__`
+                                    )
+                            );
+                        });
+                    });
+
+                    const removeButton = row.querySelector(removeSelector);
+
+                    removeButton.type = "button";
+                    removeButton.value = `remove:${index}`;
+                });
+
+                // Az új mezőkön is működjön a kliensoldali ellenőrzés.
+                if (window.jQuery &&
+                    window.jQuery.validator &&
+                    window.jQuery.validator.unobtrusive) {
+
+                    const $form = window.jQuery(form);
+
+                    $form.removeData("validator");
+                    $form.removeData("unobtrusiveValidation");
+
+                    window.jQuery.validator.unobtrusive.parse(form);
+                }
+            }
+
+            addButton.addEventListener("click", () => {
+                const rows = getRows();
+
+                if (rows.length >= 100) {
+                    message.textContent =
+                        "Legfeljebb 100 hozzávaló adható meg.";
+                    return;
+                }
+
+                message.textContent = "";
+
+                // A meglévő sor másolata megőrzi a választási
+                // lehetőségeket és a mezők ellenőrzési szabályait.
+                const newRow = rows[rows.length - 1].cloneNode(true);
+
+                clearRow(newRow);
+
+                rows[rows.length - 1].after(newRow);
+
+                updateRows();
+
+                newRow.querySelector("select").focus({
+                    preventScroll: true
+                });
+
+                newRow.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest"
+                });
+            });
+
+            form.addEventListener("click", event => {
+                const removeButton = event.target.closest(removeSelector);
+
+                if (!removeButton) {
+                    return;
+                }
+
+                event.preventDefault();
+                message.textContent = "";
+
+                const row = removeButton.closest(".border");
+                const rows = getRows();
+                const index = rows.indexOf(row);
+
+                let focusTarget;
+
+                if (rows.length === 1) {
+                    // Legalább egy üres, kitölthető sor maradjon.
+                    clearRow(row);
+                    focusTarget = row.querySelector("select");
+                } else {
+                    const nextRow = rows[index + 1] || rows[index - 1];
+
+                    row.remove();
+                    focusTarget = nextRow.querySelector("select");
+                }
+
+                updateRows();
+
+                focusTarget.focus({
+                    preventScroll: true
+                });
+            });
+
+            updateRows();
+        })();
+    </script>
+}
