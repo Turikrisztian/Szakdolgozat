@@ -1,0 +1,11 @@
+﻿@if (User.Identity?.IsAuthenticated == true)
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark"
+           asp-area=""
+           asp-controller="MealPlans"
+           asp-action="Index">
+            Heti terv
+        </a>
+    </li>
+}

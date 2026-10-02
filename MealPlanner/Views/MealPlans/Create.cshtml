@@ -1,0 +1,123 @@
+﻿@model MealPlanner.ViewModels.MealPlans.MealPlanCreateViewModel
+
+@using MealPlanner.ViewModels.MealPlans
+@using MealPlanner.Models.Enums
+
+@{
+    ViewData["Title"] = "Recept hozzáadása a heti tervhez";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p class="text-muted">
+    Saját vagy nyilvános, nem archivált receptet választhatsz.
+</p>
+
+<div class="row">
+    <div class="col-lg-8">
+        @if (Model.RecipeOptions.Count == 0)
+        {
+            <div class="alert alert-info">
+                Jelenleg nincs választható recept.
+
+                <a asp-area=""
+                   asp-controller="Recipes"
+                   asp-action="Create">
+                    Hozz létre egy saját receptet.
+                </a>
+            </div>
+        }
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Date"
+                           class="form-label"></label>
+
+                    <input asp-for="Date"
+                           type="date"
+                           asp-format="{0:yyyy-MM-dd}"
+                           class="form-control" />
+
+                    <span asp-validation-for="Date"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MealType"
+                           class="form-label"></label>
+
+                    <select asp-for="MealType"
+                            asp-items="Html.GetEnumSelectList<MealType>()"
+                            class="form-select">
+                        <option value="">
+                            -- Válassz étkezést --
+                        </option>
+                    </select>
+
+                    <span asp-validation-for="MealType"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="RecipeId"
+                       class="form-label"></label>
+
+                <select asp-for="RecipeId"
+                        asp-items="Model.RecipeOptions"
+                        class="form-select">
+                    <option value="">
+                        -- Válassz receptet --
+                    </option>
+                </select>
+
+                <span asp-validation-for="RecipeId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Servings"
+                       class="form-label"></label>
+
+                <input asp-for="Servings"
+                       type="number"
+                       min="1"
+                       step="1"
+                       class="form-control" />
+
+                <span asp-validation-for="Servings"
+                      class="text-danger"></span>
+
+                <div class="form-text">
+                    A választott receptből ennyi adagot
+                    tervezel erre az étkezésre.
+                </div>
+            </div>
+
+            <p class="small text-muted">
+                A dátum alapján a megfelelő heti tervbe
+                mentjük a tételt.
+            </p>
+
+            <button type="submit"
+                    class="btn btn-primary"
+                    disabled="@(Model.RecipeOptions.Count == 0)">
+                Hozzáadás
+            </button>
+
+            <a asp-action="Index"
+               asp-route-weekStart="@MealPlanCalendar.Iso(Model.WeekStart)"
+               class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,66 @@
+﻿@model MealPlanner.ViewModels.MealPlans.MealPlanItemEditViewModel
+
+@using MealPlanner.ViewModels.MealPlans
+
+@{
+    ViewData["Title"] = "Tervezett adagszám módosítása";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <p class="fw-semibold">
+            @Model.RecipeTitle
+        </p>
+
+        <p>
+            @Model.Date.ToString("yyyy. MM. dd.")
+            ·
+            @MealPlanCalendar.MealName(Model.MealType)
+        </p>
+
+        <form asp-action="Edit"
+              asp-route-id="@Model.Id"
+              method="post">
+
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Servings"
+                       class="form-label"></label>
+
+                <input asp-for="Servings"
+                       type="number"
+                       min="1"
+                       step="1"
+                       class="form-control" />
+
+                <span asp-validation-for="Servings"
+                      class="text-danger"></span>
+
+                <div class="form-text">
+                    A heti terv adagszámát módosítod.
+                    Az alaprecept adagszáma változatlan marad.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Mentés
+            </button>
+
+            <a asp-action="Index"
+               asp-route-weekStart="@MealPlanCalendar.Iso(Model.WeekStart)"
+               class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

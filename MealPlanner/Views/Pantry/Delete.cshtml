@@ -1,0 +1,51 @@
+﻿@using System.Globalization
+@model MealPlanner.Models.PantryItem
+
+@{
+    ViewData["Title"] = "Készlettétel törlése";
+    var hungarianCulture = CultureInfo.GetCultureInfo("hu-HU");
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <p>
+            Biztosan eltávolítod ezt az alapanyagot a saját készletedből?
+        </p>
+
+        <div class="border rounded p-3 mb-3">
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Alapanyag</dt>
+                <dd class="col-sm-8">
+                    @Model.Ingredient.Name
+                </dd>
+
+                <dt class="col-sm-4">Mennyiség</dt>
+                <dd class="col-sm-8">
+                    @Model.Quantity.ToString("0.###", hungarianCulture)
+                    @Model.Unit.Symbol
+                </dd>
+            </dl>
+        </div>
+
+        <p class="text-muted">
+            Csak a készlettétel törlődik, a receptek megmaradnak.
+            Az alapanyagot később újra felveheted a készletedbe.
+        </p>
+
+        <form asp-action="Delete"
+              asp-route-id="@Model.Id"
+              method="post">
+
+            <button type="submit" class="btn btn-danger">
+                Törlés a készletből
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>

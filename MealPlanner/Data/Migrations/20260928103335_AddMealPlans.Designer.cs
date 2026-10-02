@@ -4,6 +4,7 @@ using MealPlanner.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MealPlanner.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260928103335_AddMealPlans")]
+    partial class AddMealPlans
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,79 +275,6 @@ namespace MealPlanner.Data.Migrations
                     b.ToTable("RecipeIngredients", null, t =>
                         {
                             t.HasCheckConstraint("CK_RecipeIngredients_Quantity_Positive", "[Quantity] > 0");
-                        });
-                });
-
-            modelBuilder.Entity("MealPlanner.Models.ShoppingList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("GeneratedAtUtc")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("MealPlanId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MealPlanId")
-                        .IsUnique();
-
-                    b.ToTable("ShoppingLists", (string)null);
-                });
-
-            modelBuilder.Entity("MealPlanner.Models.ShoppingListItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("AvailableQuantity")
-                        .HasPrecision(18, 3)
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsPurchased")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(18, 3)
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<decimal>("RequiredQuantity")
-                        .HasPrecision(18, 3)
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<int>("ShoppingListId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("UnitId");
-
-                    b.HasIndex("ShoppingListId", "IngredientId")
-                        .IsUnique();
-
-                    b.ToTable("ShoppingListItems", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_ShoppingListItems_AvailableQuantity_NonNegative", "[AvailableQuantity] >= 0");
-
-                            t.HasCheckConstraint("CK_ShoppingListItems_Quantity_Positive", "[Quantity] > 0");
-
-                            t.HasCheckConstraint("CK_ShoppingListItems_RequiredQuantity_Positive", "[RequiredQuantity] > 0");
                         });
                 });
 
@@ -736,44 +666,6 @@ namespace MealPlanner.Data.Migrations
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("MealPlanner.Models.ShoppingList", b =>
-                {
-                    b.HasOne("MealPlanner.Models.MealPlan", "MealPlan")
-                        .WithOne("ShoppingList")
-                        .HasForeignKey("MealPlanner.Models.ShoppingList", "MealPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MealPlan");
-                });
-
-            modelBuilder.Entity("MealPlanner.Models.ShoppingListItem", b =>
-                {
-                    b.HasOne("MealPlanner.Models.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MealPlanner.Models.ShoppingList", "ShoppingList")
-                        .WithMany("Items")
-                        .HasForeignKey("ShoppingListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MealPlanner.Models.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("ShoppingList");
-
-                    b.Navigation("Unit");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -828,18 +720,11 @@ namespace MealPlanner.Data.Migrations
             modelBuilder.Entity("MealPlanner.Models.MealPlan", b =>
                 {
                     b.Navigation("Items");
-
-                    b.Navigation("ShoppingList");
                 });
 
             modelBuilder.Entity("MealPlanner.Models.Recipe", b =>
                 {
                     b.Navigation("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("MealPlanner.Models.ShoppingList", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

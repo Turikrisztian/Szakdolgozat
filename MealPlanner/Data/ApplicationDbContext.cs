@@ -22,6 +22,14 @@ namespace MealPlanner.Data
 
         public DbSet<PantryItem> PantryItems => Set<PantryItem>();
 
+        public DbSet<MealPlan> MealPlans => Set<MealPlan>();
+
+        public DbSet<MealPlanItem> MealPlanItems => Set<MealPlanItem>();
+
+        public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
+
+        public DbSet<ShoppingListItem> ShoppingListItems => Set<ShoppingListItem>();
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -32,6 +40,11 @@ namespace MealPlanner.Data
             builder.ApplyConfiguration(new RecipeConfiguration());
             builder.ApplyConfiguration(new RecipeIngredientConfiguration());
             builder.ApplyConfiguration(new PantryItemConfiguration());
+
+            builder.ApplyConfiguration(new MealPlanConfiguration());
+            builder.ApplyConfiguration(new MealPlanItemConfiguration());
+            builder.ApplyConfiguration(new ShoppingListConfiguration());
+            builder.ApplyConfiguration(new ShoppingListItemConfiguration());
         }
     }
 }

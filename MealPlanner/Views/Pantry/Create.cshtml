@@ -1,0 +1,82 @@
+﻿@model MealPlanner.ViewModels.Pantry.PantryCreateViewModel
+
+@{
+    ViewData["Title"] = "Alapanyag felvétele a készletbe";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="IngredientId"
+                       class="form-label"></label>
+
+                <select asp-for="IngredientId"
+                        asp-items="Model.IngredientOptions"
+                        class="form-select">
+                    <option value="">-- Válassz alapanyagot --</option>
+                </select>
+
+                <span asp-validation-for="IngredientId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Quantity"
+                       class="form-label"></label>
+
+                <input asp-for="Quantity"
+                       type="text"
+                       inputmode="decimal"
+                       class="form-control"
+                       placeholder="Például: 500 vagy 0,5" />
+
+                <span asp-validation-for="Quantity"
+                      class="text-danger"></span>
+
+                <div class="form-text">
+                    Az otthon rendelkezésre álló mennyiséget add meg,
+                    legfeljebb három tizedesjeggyel.
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="UnitId"
+                       class="form-label"></label>
+
+                <select asp-for="UnitId"
+                        asp-items="Model.UnitOptions"
+                        class="form-select">
+                    <option value="">-- Válassz mértékegységet --</option>
+                </select>
+
+                <span asp-validation-for="UnitId"
+                      class="text-danger"></span>
+
+                <div class="form-text">
+                    Az alapanyaghoz megfelelő egységet válaszd:
+                    például liszthez grammot, tejhez litert.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Mentés
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+                Mégse
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

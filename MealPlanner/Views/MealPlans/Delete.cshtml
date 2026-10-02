@@ -1,0 +1,54 @@
+﻿@model MealPlanner.ViewModels.MealPlans.MealPlanItemEditViewModel
+
+@using MealPlanner.ViewModels.MealPlans
+
+@{
+    ViewData["Title"] = "Tétel eltávolítása a heti tervből";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    Biztosan eltávolítod ezt a tételt a heti tervedből?
+</p>
+
+<dl class="row">
+    <dt class="col-sm-3">Recept</dt>
+    <dd class="col-sm-9">
+        @Model.RecipeTitle
+    </dd>
+
+    <dt class="col-sm-3">Nap</dt>
+    <dd class="col-sm-9">
+        @Model.Date.ToString("yyyy. MM. dd.")
+    </dd>
+
+    <dt class="col-sm-3">Étkezés</dt>
+    <dd class="col-sm-9">
+        @MealPlanCalendar.MealName(Model.MealType)
+    </dd>
+
+    <dt class="col-sm-3">Adagszám</dt>
+    <dd class="col-sm-9">
+        @Model.Servings adag
+    </dd>
+</dl>
+
+<p class="text-muted">
+    Csak a heti tervből kerül ki. Maga a recept megmarad.
+</p>
+
+<form asp-action="Delete"
+      asp-route-id="@Model.Id"
+      method="post">
+
+    <button type="submit" class="btn btn-danger">
+        Eltávolítás
+    </button>
+
+    <a asp-action="Index"
+       asp-route-weekStart="@MealPlanCalendar.Iso(Model.WeekStart)"
+       class="btn btn-outline-secondary">
+        Mégse
+    </a>
+</form>
